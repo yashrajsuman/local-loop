@@ -23,15 +23,6 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (password !== confirmPassword) {
-      toast({
-        title: "Passwords don't match",
-        description: "Please make sure your passwords match",
-        variant: "destructive",
-      })
-      return
-    }
-
     if (password.length < 8) {
       toast({
         title: "Password too short",
@@ -41,6 +32,15 @@ export default function SignupPage() {
       return;
     }
     
+    if (password !== confirmPassword) {
+      toast({
+        title: "Passwords don't match",
+        description: "Please make sure your passwords match",
+        variant: "destructive",
+      })
+      return
+    }
+
     setIsLoading(true)
 
     try {
