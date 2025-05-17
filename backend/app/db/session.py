@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = "postgresql+asyncpg://avnadmin:AVNS_gSFlKmSMxTFAOUMyQmZ@pg-354ca31a-rajy9234-259a.g.aivencloud.com:13460/users"  # Update this with your DB credentials
+DATABASE_URL = "postgresql+asyncpg://username:password@pg-354ca31a-*******-259a.g.aivencloud.com:port/dbname"  # Update this with your DB credentials
 
 # Create async engine
 engine = create_async_engine(DATABASE_URL, echo=True)
