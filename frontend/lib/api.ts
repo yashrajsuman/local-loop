@@ -1,6 +1,7 @@
 import type { Item, FilterOptions, User } from "@/lib/types";
 import { mockItems } from "@/lib/mock-data";
 
+
 // Base URL for the API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -317,6 +318,11 @@ export const api = {
     },
   },
 
+
+  
+
+
+
   // File uploads
   uploads: {
     // Upload an image
@@ -328,7 +334,7 @@ export const api = {
         const token =
           typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-        const response = await fetch(`${API_BASE_URL}/uploads`, {
+        const response = await fetch(`${API_BASE_URL}/api/uploads`, {
           method: "POST",
           headers: {
             ...(token ? { Authorization: `Bearer ${token}` } : {}),

@@ -4,6 +4,9 @@ import sys
 import argparse
 import uvicorn
 
+
+
+
 from app.db.init_db import init_db
 from app.core.config import settings
 
