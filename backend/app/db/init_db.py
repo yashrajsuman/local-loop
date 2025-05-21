@@ -83,6 +83,7 @@ async def init_db():
                     longitude=locations[0]['lng'],
                     image="/static/uploads/community_meetup.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
                 # EVENTS - Workshop
                 Item(
@@ -97,6 +98,7 @@ async def init_db():
                     longitude=locations[1]['lng'],
                     image="/static/uploads/tech_workshop.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
                 # EVENTS - Food
                 Item(
@@ -111,6 +113,7 @@ async def init_db():
                     longitude=locations[2]['lng'],
                     image="/static/uploads/food_festival.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
                 # EVENTS - Sale
                 Item(
@@ -125,6 +128,7 @@ async def init_db():
                     longitude=locations[3]['lng'],
                     image="/static/uploads/market_sale.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
                 # EVENTS - Music
                 Item(
@@ -139,6 +143,7 @@ async def init_db():
                     longitude=locations[4]['lng'],
                     image="/static/uploads/music_concert.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
                                 Item(
                     type=ItemType.EVENT,
@@ -152,6 +157,7 @@ async def init_db():
                     longitude=locations[10]['lng'],
                     image="/static/uploads/farmers_market.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
                 
                 # DEALS - Food
@@ -167,6 +173,7 @@ async def init_db():
                     longitude=locations[5]['lng'],
                     image="/static/uploads/cafe_deal.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
                 # DEALS - Sale
                 Item(
@@ -181,6 +188,7 @@ async def init_db():
                     longitude=locations[6]['lng'],
                     image="/static/uploads/book_deal.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
                 # DEALS - Workshop
                 Item(
@@ -195,6 +203,7 @@ async def init_db():
                     longitude=locations[7]['lng'],
                     image="/static/uploads/yoga_workshop.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
                 # DEALS - Community Meetup
                 Item(
@@ -209,6 +218,7 @@ async def init_db():
                     longitude=locations[8]['lng'],
                     image="/static/uploads/community_meetup.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
                 # DEALS - Music
                 Item(
@@ -223,6 +233,7 @@ async def init_db():
                     longitude=locations[9]['lng'],
                     image="/static/uploads/music_concert.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
                 Item(
                     type=ItemType.DEAL,
@@ -236,6 +247,7 @@ async def init_db():
                     longitude=locations[11]['lng'],
                     image="/static/uploads/street_eats.jpg",
                     user_id=test_user.id,
+                    count=0,
                 ),
             ]
             

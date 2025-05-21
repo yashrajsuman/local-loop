@@ -13,15 +13,13 @@ import {
   ArrowLeft,
   Heart,
   Share2,
-  Users, // Import Users icon
-  PlusCircle, // Import PlusCircle icon
+  Users,
 } from "lucide-react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/components/auth-provider";
 
-// Dynamically import map component to avoid SSR issues
 const DetailMapComponent = dynamic(() => import("@/components/detail-map"), {
   ssr: false,
   loading: () => (
@@ -36,9 +34,11 @@ export default function ItemDetailPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { user } = useAuth();
+
   const [item, setItem] = useState<Item | null>(null);
   const [attendeeCount, setAttendeeCount] = useState<number | null>(null);
   const [hasAttended, setHasAttended] = useState<boolean>(false);
+  const [canDelete, setCanDelete] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,8 +46,12 @@ export default function ItemDetailPage() {
       setLoading(true);
       try {
         const data = await api.items.getById(params.id as string);
-        console.log("Item data received:", data);
         setItem(data);
+
+        // Check localStorage for delete permission
+        const canDeleteFlag = localStorage.getItem(data.id);
+        setCanDelete(canDeleteFlag === "true");
+
       } catch (error) {
         console.error("Error fetching item:", error);
         toast({
@@ -76,7 +80,6 @@ export default function ItemDetailPage() {
       }
     };
 
-    // Check if user already attended (from localStorage)
     const attended = localStorage.getItem(`attended_${params.id}`);
     if (attended === "true") {
       setHasAttended(true);
@@ -86,7 +89,6 @@ export default function ItemDetailPage() {
       fetchAttendeeCount();
     }
   }, [params.id]);
-
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -202,11 +204,7 @@ export default function ItemDetailPage() {
         <div className="grid md:grid-cols-2 gap-8">
           <div className="relative aspect-video rounded-lg overflow-hidden shadow-md">
             <Image
-              src={
-                item.image
-                  ? `http://localhost:8000${item.image}`
-                  : "/placeholder.svg"
-              }
+              src={item.image ? `http://localhost:8000${item.image}` : "/placeholder.svg"}
               alt={item.title}
               fill
               className="object-cover"
@@ -216,10 +214,7 @@ export default function ItemDetailPage() {
           <div>
             <div className="flex items-start justify-between">
               <div>
-                <Badge
-                  className={`${item.type === "event" ? "bg-primary-600" : "bg-green-600"
-                    } mb-2`}
-                >
+                <Badge className={`${item.type === "event" ? "bg-primary-600" : "bg-green-600"} mb-2`}>
                   {item.type === "event" ? "Event" : "Deal"}
                 </Badge>
                 <Badge variant="outline" className="ml-2">
@@ -234,9 +229,11 @@ export default function ItemDetailPage() {
                 <Button variant="outline" size="icon" onClick={handleShare}>
                   <Share2 className="h-4 w-4" />
                 </Button>
-                <Button variant="destructive" onClick={handleDelete}>
-                  Delete
-                </Button>
+                {canDelete && (
+                  <Button variant="destructive" onClick={handleDelete}>
+                    Delete
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -257,17 +254,14 @@ export default function ItemDetailPage() {
               <span>{item.address}</span>
             </div>
 
-
-
             {attendeeCount === null ? (
               <div className="mt-4 text-sm text-gray-500">Loading attendee info...</div>
             ) : (
               <div className="mt-4 flex items-center justify-between">
-                <div className=" text-gray-600 flex items-center">
+                <div className="text-gray-600 flex items-center">
                   <Users className="h-5 w-5 mr-2 text-primary-600" />
                   <span>Attendees: {attendeeCount}</span>
                 </div>
-                
                 <Button
                   variant={hasAttended ? "default" : "secondary"}
                   size="sm"
@@ -278,12 +272,11 @@ export default function ItemDetailPage() {
                       : "bg-blue-600 text-white hover:bg-blue-700"
                   }
                   onClick={async () => {
-                    let token = localStorage.getItem("token")
+                    let token = localStorage.getItem("token");
                     try {
                       const res = await fetch(`http://localhost:8000/api/items/${params.id}/count`, {
                         method: "PATCH",
                         headers: {
-
                           "Content-Type": "application/json",
                           "Authorization": `Bearer ${token}`,
                         },
@@ -310,41 +303,29 @@ export default function ItemDetailPage() {
                     }
                   }}
                 >
-                  
                   {hasAttended ? "Attending" : "Attend"}
                 </Button>
               </div>
             )}
             <div className="mt-6 text-sm text-gray-500 flex items-center">
               <Clock className="h-4 w-4 mr-1" />
-              <span>
-                Posted on {new Date(item.createdAt).toLocaleDateString()}
-              </span>
+              <span>Posted on {new Date(item.createdAt).toLocaleDateString()}</span>
             </div>
           </div>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-bold mb-4">Description</h2>
-          <p className="text-gray-700 whitespace-pre-line">
-            {item.description}
-          </p>
+          <p className="text-gray-700 whitespace-pre-line">{item.description}</p>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-xl font-bold mb-4">Location</h2>
           <div className="h-[400px] rounded-lg overflow-hidden">
-            <DetailMapComponent
-              location={item.location}
-              address={item.address}
-            />
+            <DetailMapComponent location={item.location} address={item.address} />
           </div>
-
-
         </div>
-
       </div>
     </div>
   );
 }
-

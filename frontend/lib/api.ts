@@ -109,26 +109,32 @@ export const api = {
 
     // Create a new item
     create: async (
-      item: Omit<Item, "id" | "createdAt" | "updatedAt" | "createdBy">
-    ): Promise<Item> => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/items`, {
-          method: "POST",
-          headers: getAuthHeaders(),
-          body: JSON.stringify(item),
-        });
+  item: Omit<Item, "id" | "createdAt" | "updatedAt" | "createdBy">
+): Promise<Item> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/items`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(item),
+    });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || "Failed to create item");
-        }
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || "Failed to create item");
+    }
 
-        return await response.json();
-      } catch (error) {
-        console.error("Error creating item:", error);
-        throw error;
-      }
-    },
+    const createdItem: Item = await response.json();
+
+    // ✅ Store the created item ID in localStorage with true value
+    localStorage.setItem(createdItem.id, "true");
+
+    return createdItem;
+  } catch (error) {
+    console.error("Error creating item:", error);
+    throw error;
+  }
+},
+
 
     // Update an existing item
     update: async (id: string, item: Partial<Item>): Promise<Item> => {

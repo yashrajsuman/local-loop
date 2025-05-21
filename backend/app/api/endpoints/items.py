@@ -295,7 +295,7 @@ async def delete_item(
 async def update_item_count(
     item_id: UUID,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    # current_user: User = Depends(get_current_user),
 ):
     query = await db.execute(select(Item).where(Item.id == item_id))
     item = query.scalar_one_or_none()
@@ -308,11 +308,7 @@ async def update_item_count(
 
     # You might want to add authorization checks here to ensure
     # only authorized users can update the count. For example:
-    if item.user_id != current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not authorized to update this item's count",
-        )
+   
 
     item.count += 1 # Increment the count by 1
     await db.commit()
@@ -320,19 +316,3 @@ async def update_item_count(
 
     # Construct the response dictionary using the from_orm method
     return ItemResponse.from_orm(item)
-
-@router.get("/{item_id}/count")
-async def get_item_count(
-    item_id: UUID,
-    db: AsyncSession = Depends(get_db),
-):
-    query = await db.execute(select(Item.count).where(Item.id == item_id))
-    count = query.scalar_one_or_none()
-
-    if count is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Item not found",
-        )
-
-    return {"count": count}
