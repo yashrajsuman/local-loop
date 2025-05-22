@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from typing import Optional
-
+import os
+import shutil
 from app.models.user import User
 from app.middleware.auth import get_current_user
 from app.utils.image_handler import save_upload_file
@@ -8,7 +9,7 @@ from app.utils.image_handler import save_upload_file
 router = APIRouter()
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/uploads", status_code=status.HTTP_201_CREATED)
 async def upload_image(
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
@@ -22,3 +23,5 @@ async def upload_image(
     file_path = await save_upload_file(file)
     
     return {"url": file_path}
+
+

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useParams } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -144,6 +145,7 @@ export default function SubmitPage() {
       };
 
       await api.items.create(newItem as any);
+    
 
       toast({
         title: "Success!",

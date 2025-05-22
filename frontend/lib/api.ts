@@ -1,6 +1,9 @@
 import type { Item, FilterOptions, User } from "@/lib/types";
 import { mockItems } from "@/lib/mock-data";
 
+
+
+
 // Base URL for the API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -62,13 +65,15 @@ const getAuthHeaders = (): HeadersInit => {
 
 // API client functions
 export const api = {
+
   // Items (Events & Deals)
   items: {
     // Get all items with optional filtering
     getAll: async (filters?: FilterOptions): Promise<Item[]> => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/items${buildQueryString(filters)}`,
+          `${API_BASE_URL}/api/items`,
+          // `${API_BASE_URL}/api/items${buildQueryString(filters)}`,
           {
             headers: getAuthHeaders(),
           }
@@ -89,7 +94,7 @@ export const api = {
     // Get a single item by ID
     getById: async (id: string): Promise<Item> => {
       try {
-        const response = await fetch(`${API_BASE_URL}/items/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/items/${id}`, {
           headers: getAuthHeaders(),
         });
 
@@ -110,7 +115,7 @@ export const api = {
       item: Omit<Item, "id" | "createdAt" | "updatedAt" | "createdBy">
     ): Promise<Item> => {
       try {
-        const response = await fetch(`${API_BASE_URL}/items`, {
+        const response = await fetch(`${API_BASE_URL}/api/items`, {
           method: "POST",
           headers: getAuthHeaders(),
           body: JSON.stringify(item),
@@ -121,17 +126,37 @@ export const api = {
           throw new Error(errorData.detail || "Failed to create item");
         }
 
-        return await response.json();
+        const createdItem: Item = await response.json();
+        //For delete
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found. User not logged in.");
+        }
+
+        const profile = await fetch("http://localhost:8000/api/auth/profile", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+        const userProfile = await profile.json();
+
+        localStorage.setItem(`${userProfile.id}_${createdItem.id}`, "true-d")
+        //.
+
+        return createdItem;
       } catch (error) {
         console.error("Error creating item:", error);
         throw error;
       }
     },
 
+
     // Update an existing item
     update: async (id: string, item: Partial<Item>): Promise<Item> => {
       try {
-        const response = await fetch(`${API_BASE_URL}/items/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/items/${id}`, {
           method: "PATCH",
           headers: getAuthHeaders(),
           body: JSON.stringify(item),
@@ -152,7 +177,7 @@ export const api = {
     // Delete an item
     delete: async (id: string): Promise<void> => {
       try {
-        const response = await fetch(`${API_BASE_URL}/items/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/items/${id}`, {
           method: "DELETE",
           headers: getAuthHeaders(),
         });
@@ -189,6 +214,7 @@ export const api = {
           const errorData = await response.json();
           throw new Error(errorData.detail || "Login failed");
         }
+        else localStorage.setItem("user_id", email);
 
         const data = await response.json();
         const token = data.access_token;
@@ -237,6 +263,7 @@ export const api = {
           const errorData = await response.json();
           throw new Error(errorData.detail || "Signup failed");
         }
+        else localStorage.setItem("user_id", email);
 
         const data = await response.json();
         const token = data.access_token;
@@ -264,6 +291,7 @@ export const api = {
           user,
           token,
         };
+
       } catch (error) {
         console.error("Signup error:", error);
         throw error;
@@ -316,6 +344,11 @@ export const api = {
     },
   },
 
+
+
+
+
+
   // File uploads
   uploads: {
     // Upload an image
@@ -327,7 +360,7 @@ export const api = {
         const token =
           typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-        const response = await fetch(`${API_BASE_URL}/uploads`, {
+        const response = await fetch(`${API_BASE_URL}/api/uploads`, {
           method: "POST",
           headers: {
             ...(token ? { Authorization: `Bearer ${token}` } : {}),

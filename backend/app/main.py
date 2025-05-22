@@ -6,6 +6,12 @@ import os
 from app.api.api import api_router
 from app.core.config import settings
 
+
+from app.api.endpoints.uploads import router as uploads_router  # Make sure path is correct
+
+
+
+
 app = FastAPI(
     title=settings.APP_NAME,
     description=settings.APP_DESCRIPTION,
@@ -26,6 +32,7 @@ os.makedirs(uploads_dir, exist_ok=True)
 app.mount("/static", StaticFiles(directory=uploads_dir), name="static")
 
 app.include_router(api_router, prefix="/api")
+app.include_router(uploads_router, prefix="/api")
 
 
 @app.get("/")
