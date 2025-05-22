@@ -47,10 +47,25 @@ export default function ItemDetailPage() {
       try {
         const data = await api.items.getById(params.id as string);
         setItem(data);
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found. User not logged in.");
+        }
 
-        // Check localStorage for delete permission
-        const canDeleteFlag = localStorage.getItem(data.id);
-        setCanDelete(canDeleteFlag === "true");
+        const profile = await fetch("http://localhost:8000/api/auth/profile", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+        const userProfile = await profile.json();
+
+        // console.log(localStorage.getItem(`${userProfile.id}_${params.id}`))
+        // console.log(`${userProfile.id}_${params.id}`)
+        if (localStorage.getItem(`${userProfile.id}_${params.id}`) === "true-d")
+          setCanDelete(true);
+
 
       } catch (error) {
         console.error("Error fetching item:", error);
@@ -75,20 +90,26 @@ export default function ItemDetailPage() {
         const res = await fetch(`http://localhost:8000/api/items/${params.id}/count`);
         const data = await res.json();
         setAttendeeCount(data.count);
+
+
+        const attended = localStorage.getItem(`attended_${user?.id}_${params.id}`);
+        // console.log(`attended_${user?.id}_${params.id}`)
+        // console.log(attended)
+        if (attended === "true") {
+          setHasAttended(true);
+        }
+
+
       } catch (error) {
         console.error("Failed to fetch attendee count:", error);
       }
     };
 
-    const attended = localStorage.getItem(`attended_${params.id}`);
-    if (attended === "true") {
-      setHasAttended(true);
-    }
 
     if (params.id) {
       fetchAttendeeCount();
     }
-  }, [params.id]);
+  },);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -272,7 +293,23 @@ export default function ItemDetailPage() {
                       : "bg-blue-600 text-white hover:bg-blue-700"
                   }
                   onClick={async () => {
-                    let token = localStorage.getItem("token");
+                    if (!user) {
+                      toast({
+                        title: "Authentication required",
+                        description: "Please log in to mark attendance.",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
+                    const token = localStorage.getItem("token");
+                    if (!token) {
+                      toast({
+                        title: "Authentication required",
+                        description: "Please log in to mark attendance.",
+                        variant: "destructive",
+                      });
+                      return;
+                    }
                     try {
                       const res = await fetch(`http://localhost:8000/api/items/${params.id}/count`, {
                         method: "PATCH",
@@ -287,7 +324,7 @@ export default function ItemDetailPage() {
                       const data = await res.json();
                       setAttendeeCount(data.count);
                       setHasAttended(true);
-                      localStorage.setItem(`attended_${params.id}`, "true");
+                      localStorage.setItem(`attended_${user?.id}_${params.id}`, "true");
 
                       toast({
                         title: "You're attending!",

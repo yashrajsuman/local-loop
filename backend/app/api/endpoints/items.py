@@ -316,3 +316,19 @@ async def update_item_count(
 
     # Construct the response dictionary using the from_orm method
     return ItemResponse.from_orm(item)
+
+@router.get("/{item_id}/count")
+async def get_item_count(
+    item_id: UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    query = await db.execute(select(Item.count).where(Item.id == item_id))
+    count = query.scalar_one_or_none()
+
+    if count is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Item not found",
+        )
+
+    return {"count": count}

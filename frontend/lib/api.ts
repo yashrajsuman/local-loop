@@ -2,6 +2,8 @@ import type { Item, FilterOptions, User } from "@/lib/types";
 import { mockItems } from "@/lib/mock-data";
 
 
+
+
 // Base URL for the API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -63,6 +65,7 @@ const getAuthHeaders = (): HeadersInit => {
 
 // API client functions
 export const api = {
+
   // Items (Events & Deals)
   items: {
     // Get all items with optional filtering
@@ -109,31 +112,45 @@ export const api = {
 
     // Create a new item
     create: async (
-  item: Omit<Item, "id" | "createdAt" | "updatedAt" | "createdBy">
-): Promise<Item> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/items`, {
-      method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(item),
-    });
+      item: Omit<Item, "id" | "createdAt" | "updatedAt" | "createdBy">
+    ): Promise<Item> => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/items`, {
+          method: "POST",
+          headers: getAuthHeaders(),
+          body: JSON.stringify(item),
+        });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || "Failed to create item");
-    }
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || "Failed to create item");
+        }
 
-    const createdItem: Item = await response.json();
+        const createdItem: Item = await response.json();
+        //For delete
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No token found. User not logged in.");
+        }
 
-    // ✅ Store the created item ID in localStorage with true value
-    localStorage.setItem(createdItem.id, "true");
+        const profile = await fetch("http://localhost:8000/api/auth/profile", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+        const userProfile = await profile.json();
 
-    return createdItem;
-  } catch (error) {
-    console.error("Error creating item:", error);
-    throw error;
-  }
-},
+        localStorage.setItem(`${userProfile.id}_${createdItem.id}`, "true-d")
+        //.
+
+        return createdItem;
+      } catch (error) {
+        console.error("Error creating item:", error);
+        throw error;
+      }
+    },
 
 
     // Update an existing item
@@ -197,6 +214,7 @@ export const api = {
           const errorData = await response.json();
           throw new Error(errorData.detail || "Login failed");
         }
+        else localStorage.setItem("user_id", email);
 
         const data = await response.json();
         const token = data.access_token;
@@ -245,6 +263,7 @@ export const api = {
           const errorData = await response.json();
           throw new Error(errorData.detail || "Signup failed");
         }
+        else localStorage.setItem("user_id", email);
 
         const data = await response.json();
         const token = data.access_token;
@@ -272,6 +291,7 @@ export const api = {
           user,
           token,
         };
+
       } catch (error) {
         console.error("Signup error:", error);
         throw error;
@@ -325,7 +345,7 @@ export const api = {
   },
 
 
-  
+
 
 
 
