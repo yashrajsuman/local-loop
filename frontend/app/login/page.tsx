@@ -53,11 +53,11 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container py-8 min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="container py-8 min-h-screen bg-gray-50 dark:bg-[#010817]">
 
-      <div className="mx-auto max-w-2xl bg-white dark:bg-gray-800 p-8 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+      <div className="mx-auto max-w-2xl bg-white dark:bg-[#010817] p-8 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="space-y-2 text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Login to Your Account</h1>
+          <h1 className="text-3xl font-bold text-[#010817] dark:text-white">Login to Your Account</h1>
           <p className="text-muted-foreground dark:text-gray-300">Enter your credentials to access your account</p>
         </div>
 
@@ -75,7 +75,7 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
+                  className="w-full bg-white dark:bg-[#020817] border-gray-300 dark:border-gray-600 text-[#010817] dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                 />
               </div>
 
@@ -87,7 +87,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                  className="w-full bg-white dark:bg-[#020817] border-gray-300 dark:border-gray-600 text-[#010817] dark:text-white"
                 />
               </div>
             </div>
