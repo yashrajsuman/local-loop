@@ -8,7 +8,6 @@ import { api } from "@/lib/api";
 import type { Item, FilterOptions } from "@/lib/types";
 import { Map, List, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
 import { useLocation } from "@/contexts/location-context";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +23,6 @@ const MapViewComponent = dynamic(() => import("@/components/map-view"), {
 });
 
 export default function EventsPage() {
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { userLocation, locationStatus, setLocationModalOpen } = useLocation();
   const [items, setItems] = useState<Item[]>([]);
@@ -114,22 +112,6 @@ export default function EventsPage() {
 
   return (
     <div className="container py-8">
-      {/* Theme Toggle Button - Fixed Position */}
-      <div className="fixed top-4 right-4 z-50">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          {theme === "dark" ? (
-            <Sun className="h-4 w-4 text-yellow-500" />
-          ) : (
-            <Moon className="h-4 w-4 text-blue-600" />
-          )}
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </div>
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>

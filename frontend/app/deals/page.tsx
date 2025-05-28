@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTheme } from "next-themes";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { FilterBar } from "@/components/filter-bar";
@@ -25,7 +24,6 @@ const MapViewComponent = dynamic(() => import("@/components/map-view"), {
 
 export default function DealsPage() {
   const { userLocation, locationStatus, setLocationModalOpen } = useLocation();
-  const { theme, setTheme } = useTheme();
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterOptions>({
@@ -118,18 +116,6 @@ export default function DealsPage() {
                 </Badge>
               )}
             </div>
-            
-            {/* Theme Toggle Button */}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="h-9 w-9 ml-4"
-            >
-              <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
           </div>
         </div>
         

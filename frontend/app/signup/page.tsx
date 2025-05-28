@@ -5,7 +5,6 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useTheme } from "next-themes"
 import { useAuth } from "@/components/auth-provider"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,7 +21,6 @@ export default function SignupPage() {
   const { signup } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
-  const { theme, setTheme } = useTheme()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -60,19 +58,6 @@ export default function SignupPage() {
   return (
     <div className="container py-8 min-h-screen bg-background">
       <div className="mx-auto max-w-2xl bg-card p-8 rounded-lg shadow-sm border">
-        {/* Theme Toggle Button */}
-        <div className="flex justify-end mb-4">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="h-9 w-9"
-          >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
-        </div>
 
         <div className="space-y-2 text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground">Create an Account</h1>

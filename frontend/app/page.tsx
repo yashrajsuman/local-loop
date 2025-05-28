@@ -4,11 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { MapPin, Calendar, Tag, Search, Users, TrendingUp, Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   // Avoid hydration mismatch
@@ -22,22 +20,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Theme Toggle Button - Fixed Position */}
-      <div className="fixed top-4 right-4 z-50">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          {theme === "dark" ? (
-            <Sun className="h-4 w-4 text-yellow-500" />
-          ) : (
-            <Moon className="h-4 w-4 text-blue-600" />
-          )}
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </div>
+      
 
       {/* Hero Section */}
       <section className="relative h-[600px] bg-blue-800 dark:bg-gray-900 text-white">

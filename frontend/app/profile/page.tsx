@@ -21,11 +21,8 @@ import { ListView } from "@/components/list-view";
 import { api } from "@/lib/api";
 import type { Item } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
-import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
 
 export default function ProfilePage() {
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
@@ -111,22 +108,6 @@ export default function ProfilePage() {
 
   return (
     <div className="container py-8">
-      {/* Theme Toggle Button - Fixed Position */}
-      <div className="fixed top-4 right-4 z-50">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          {theme === "dark" ? (
-            <Sun className="h-4 w-4 text-yellow-500" />
-          ) : (
-            <Moon className="h-4 w-4 text-blue-600" />
-          )}
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </div>
 
       <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Your Profile</h1>
 

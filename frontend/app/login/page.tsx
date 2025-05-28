@@ -10,11 +10,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
 
 export default function LoginPage() {
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -57,22 +54,6 @@ export default function LoginPage() {
 
   return (
     <div className="container py-8 min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Theme Toggle Button - Fixed Position */}
-      <div className="fixed top-4 right-4 z-50">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          {theme === "dark" ? (
-            <Sun className="h-4 w-4 text-yellow-500" />
-          ) : (
-            <Moon className="h-4 w-4 text-blue-600" />
-          )}
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </div>
 
       <div className="mx-auto max-w-2xl bg-white dark:bg-gray-800 p-8 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="space-y-2 text-center mb-8">
