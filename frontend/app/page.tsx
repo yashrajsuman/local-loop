@@ -1,13 +1,46 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { MapPin, Calendar, Tag, Search, Users, TrendingUp } from "lucide-react";
+import { MapPin, Calendar, Tag, Search, Users, TrendingUp, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
+      {/* Theme Toggle Button - Fixed Position */}
+      <div className="fixed top-4 right-4 z-50">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border shadow-lg hover:shadow-xl transition-all duration-300"
+        >
+          {theme === "dark" ? (
+            <Sun className="h-4 w-4 text-yellow-500" />
+          ) : (
+            <Moon className="h-4 w-4 text-blue-600" />
+          )}
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </div>
+
       {/* Hero Section */}
-      <section className="relative h-[600px] bg-blue-800 text-white">
+      <section className="relative h-[600px] bg-blue-800 dark:bg-gray-900 text-white">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -18,7 +51,7 @@ export default function HomePage() {
             priority
           />
           {/* Dark overlay gradient */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-900/70 to-primary-700/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-900/70 to-primary-700/70 dark:from-gray-900/80 dark:to-gray-700/80" />
         </div>
 
         {/* Centered Content */}
@@ -34,7 +67,7 @@ export default function HomePage() {
             <Link href="/events">
               <Button
                 size="lg"
-                className="bg-white text-primary-700 hover:bg-white/90 rounded-full px-8 shadow-md"
+                className="bg-white text-primary-700 hover:bg-white/90 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 rounded-full px-8 shadow-md"
               >
                 Explore Events
               </Button>
@@ -42,7 +75,7 @@ export default function HomePage() {
             <Link href="/deals">
               <Button
                 size="lg"
-                className="bg-white text-primary-700 hover:bg-white/90 rounded-full px-8 shadow-md"
+                className="bg-white text-primary-700 hover:bg-white/90 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 rounded-full px-8 shadow-md"
               >
                 Find Deals
               </Button>
@@ -51,21 +84,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features Section - card overlay on subtle blue shade */}
-      <section className="py-20 bg-blue-50">
+      {/* Features Section */}
+      <section className="py-20 bg-blue-50 dark:bg-gray-900">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">
+            <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">
               Everything You Need in One Place
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               NeighborHub brings your community together by making local events
               and deals easily accessible.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* (Repeat feature cards as before) */}
             {[
               {
                 icon: MapPin,
@@ -99,14 +131,14 @@ export default function HomePage() {
               },
             ].map(({ icon: Icon, title, text }, idx) => (
               <div key={idx} className="group">
-                <div className="flex flex-col items-center p-6 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 h-full">
-                  <div className="rounded-full bg-blue-100 p-4 mb-4 group-hover:bg-blue-200 transition-colors">
-                    <Icon className="h-8 w-8 text-primary-700" />
+                <div className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-lg dark:shadow-gray-700/50 transition-all duration-300 h-full">
+                  <div className="rounded-full bg-blue-100 dark:bg-blue-900/50 p-4 mb-4 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/70 transition-colors">
+                    <Icon className="h-8 w-8 text-primary-700 dark:text-blue-400" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2 text-gray-800">
+                  <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
                     {title}
                   </h3>
-                  <p className="text-gray-600 text-center">{text}</p>
+                  <p className="text-gray-600 dark:text-gray-300 text-center">{text}</p>
                 </div>
               </div>
             ))}
@@ -115,11 +147,11 @@ export default function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50 dark:bg-gray-800">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">How It Works</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">How It Works</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Getting started with LocalLoop is easy. Find what's happening
               around you in just a few steps.
             </p>
@@ -145,20 +177,20 @@ export default function HomePage() {
             ].map(({ step, title, desc }) => (
               <div
                 key={step}
-                className="flex flex-col items-center text-center bg-white p-6 rounded-xl shadow-sm"
+                className="flex flex-col items-center text-center bg-white dark:bg-gray-700 p-6 rounded-xl shadow-sm dark:shadow-gray-600/20"
               >
-                <div className="mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-primary-700 text-white text-xl font-bold">
+                <div className="mb-4 flex items-center justify-center w-12 h-12 rounded-full bg-primary-700 dark:bg-blue-600 text-white text-xl font-bold">
                   {step}
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{title}</h3>
-                <p className="text-gray-600">{desc}</p>
+                <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">{title}</h3>
+                <p className="text-gray-600 dark:text-gray-300">{desc}</p>
               </div>
             ))}
           </div>
 
           <div className="mt-16 text-center">
             <Link href="/events">
-              <Button size="lg" className="bg-primary-600 hover:bg-primary-700">
+              <Button size="lg" className="bg-primary-600 hover:bg-primary-700 dark:bg-blue-600 dark:hover:bg-blue-700">
                 Get Started Now
               </Button>
             </Link>
@@ -167,13 +199,13 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary-700 text-white">
+      <section className="py-20 bg-primary-700 dark:bg-gray-900 text-white">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-4">
               Ready to Discover Your Neighborhood?
             </h2>
-            <p className="text-xl mb-8">
+            <p className="text-xl mb-8 text-white/90 dark:text-gray-300">
               Join thousands of neighbors finding the best local events and
               deals every day.
             </p>
@@ -181,7 +213,7 @@ export default function HomePage() {
               <Link href="/signup">
                 <Button
                   size="lg"
-                  className="bg-white text-primary-700 hover:bg-white/90 rounded-full px-8 shadow-md"
+                  className="bg-white text-primary-700 hover:bg-white/90 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 rounded-full px-8 shadow-md"
                 >
                   Sign Up Free
                 </Button>
@@ -189,7 +221,7 @@ export default function HomePage() {
               <Link href="/login">
                 <Button
                   size="lg"
-                  className="bg-white text-primary-700 hover:bg-white/90 rounded-full px-8 shadow-md"
+                  className="bg-white text-primary-700 hover:bg-white/90 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 rounded-full px-8 shadow-md"
                 >
                   Log In
                 </Button>

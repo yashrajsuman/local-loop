@@ -21,8 +21,12 @@ import { ListView } from "@/components/list-view";
 import { api } from "@/lib/api";
 import type { Item } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 
 export default function ProfilePage() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
@@ -31,6 +35,11 @@ export default function ProfilePage() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [userItems, setUserItems] = useState<Item[]>([]);
   const [isLoadingItems, setIsLoadingItems] = useState(true);
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -84,10 +93,14 @@ export default function ProfilePage() {
     }
   };
 
+  if (!mounted) {
+    return null;
+  }
+
   if (authLoading) {
     return (
       <div className="container py-12">
-        <div className="text-center">Loading profile...</div>
+        <div className="text-center text-gray-600 dark:text-gray-300">Loading profile...</div>
       </div>
     );
   }
@@ -98,47 +111,80 @@ export default function ProfilePage() {
 
   return (
     <div className="container py-8">
-      <h1 className="text-3xl font-bold mb-6">Your Profile</h1>
+      {/* Theme Toggle Button - Fixed Position */}
+      <div className="fixed top-4 right-4 z-50">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="rounded-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border shadow-lg hover:shadow-xl transition-all duration-300"
+        >
+          {theme === "dark" ? (
+            <Sun className="h-4 w-4 text-yellow-500" />
+          ) : (
+            <Moon className="h-4 w-4 text-blue-600" />
+          )}
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </div>
+
+      <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Your Profile</h1>
 
       <Tabs defaultValue="profile">
-        <TabsList className="mb-6">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="items">Your Items</TabsTrigger>
+        <TabsList className="mb-6 bg-gray-100 dark:bg-gray-800">
+          <TabsTrigger 
+            value="profile"
+            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white"
+          >
+            Profile
+          </TabsTrigger>
+          <TabsTrigger 
+            value="items"
+            className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white"
+          >
+            Your Items
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile">
-          <Card className="max-w-2xl">
+          <Card className="max-w-2xl bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
             <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-gray-900 dark:text-white">Profile Information</CardTitle>
+              <CardDescription className="text-gray-600 dark:text-gray-300">
                 Update your account information here
               </CardDescription>
             </CardHeader>
             <form onSubmit={handleUpdateProfile}>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
+                  <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">Full Name</Label>
                   <Input
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
+                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">Email</Label>
                   <Input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
                   />
                 </div>
               </CardContent>
               <CardFooter>
-                <Button type="submit" disabled={isUpdating}>
+                <Button 
+                  type="submit" 
+                  disabled={isUpdating}
+                  className="bg-primary-600 hover:bg-primary-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+                >
                   {isUpdating ? "Updating..." : "Update Profile"}
                 </Button>
               </CardFooter>
@@ -149,23 +195,29 @@ export default function ProfilePage() {
         <TabsContent value="items">
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Your Events & Deals</h2>
-              <Button onClick={() => router.push("/submit")}>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Events & Deals</h2>
+              <Button 
+                onClick={() => router.push("/submit")}
+                className="bg-primary-600 hover:bg-primary-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+              >
                 Add New Item
               </Button>
             </div>
 
             {isLoadingItems ? (
-              <div className="text-center py-12">Loading your items...</div>
+              <div className="text-center py-12 text-gray-600 dark:text-gray-300">Loading your items...</div>
             ) : userItems.length > 0 ? (
               <ListView items={userItems} />
             ) : (
-              <div className="text-center py-12 bg-gray-50 rounded-lg">
-                <h3 className="text-lg font-medium">No items yet</h3>
-                <p className="text-gray-500 mb-4">
+              <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">No items yet</h3>
+                <p className="text-gray-500 dark:text-gray-400 mb-4">
                   You haven&apos;t created any events or deals yet
                 </p>
-                <Button onClick={() => router.push("/submit")}>
+                <Button 
+                  onClick={() => router.push("/submit")}
+                  className="bg-primary-600 hover:bg-primary-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+                >
                   Create Your First Item
                 </Button>
               </div>
