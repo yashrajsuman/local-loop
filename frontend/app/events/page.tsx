@@ -6,7 +6,8 @@ import { FilterBar } from "@/components/filter-bar";
 import { ListView } from "@/components/list-view";
 import { api } from "@/lib/api";
 import type { Item, FilterOptions } from "@/lib/types";
-import { Map, List } from "lucide-react";
+import { Map, List, Moon, Sun } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
 import { useLocation } from "@/contexts/location-context";
 import { Badge } from "@/components/ui/badge";
@@ -15,13 +16,14 @@ import { Badge } from "@/components/ui/badge";
 const MapViewComponent = dynamic(() => import("@/components/map-view"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[600px] bg-gray-100 flex items-center justify-center">
-      Loading map...
+    <div className="w-full h-[600px] bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+      <div className="text-gray-600 dark:text-gray-300">Loading map...</div>
     </div>
   ),
 });
 
 export default function EventsPage() {
+  const [mounted, setMounted] = useState(false);
   const { userLocation, locationStatus, setLocationModalOpen } = useLocation();
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +36,11 @@ export default function EventsPage() {
     radius: 20, // Default to 20km radius
   });
   const [view, setView] = useState<"map" | "list">("list");
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (userLocation && locationStatus === "granted") {
@@ -99,16 +106,21 @@ export default function EventsPage() {
     });
   };
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div className="container py-8">
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Events</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Events</h1>
+          <p className="text-muted-foreground dark:text-gray-300 mt-1">
             Discover upcoming events in your neighborhood
           </p>
           {userLocation && (
-            <Badge variant="outline" className="mt-2">
+            <Badge variant="outline" className="mt-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300">
               Showing events within {filters.radius}km of your location
             </Badge>
           )}
@@ -118,12 +130,18 @@ export default function EventsPage() {
           onValueChange={(v) => setView(v as "map" | "list")}
           className="w-full md:w-auto"
         >
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="list" className="flex items-center gap-1">
+          <TabsList className="grid w-full grid-cols-2 bg-gray-100 dark:bg-gray-800">
+            <TabsTrigger 
+              value="list" 
+              className="flex items-center gap-1 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white"
+            >
               <List className="h-4 w-4" />
               <span>List</span>
             </TabsTrigger>
-            <TabsTrigger value="map" className="flex items-center gap-1">
+            <TabsTrigger 
+              value="map" 
+              className="flex items-center gap-1 data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-white"
+            >
               <Map className="h-4 w-4" />
               <span>Map</span>
             </TabsTrigger>
