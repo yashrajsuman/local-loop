@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -11,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { Moon, Sun } from "lucide-react"
+import { signIn } from "next-auth/react"
 
 export default function SignupPage() {
   const [name, setName] = useState("")
@@ -58,7 +58,6 @@ export default function SignupPage() {
   return (
     <div className="container py-8 min-h-screen bg-background">
       <div className="mx-auto max-w-2xl bg-card p-8 rounded-lg shadow-sm border">
-
         <div className="space-y-2 text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground">Create an Account</h1>
           <p className="text-muted-foreground">Enter your information to create an account</p>
@@ -69,26 +68,21 @@ export default function SignupPage() {
             <h2 className="text-xl font-semibold text-foreground border-b border-border pb-2 text-center">
               Account Information
             </h2>
-            
+
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-sm font-medium text-foreground">
-                  Full Name
-                </Label>
-                <Input 
-                  id="name" 
-                  placeholder="John Doe" 
-                  required 
-                  value={name} 
-                  onChange={(e) => setName(e.target.value)} 
-                  className="w-full bg-background border-input"
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  placeholder="John Doe"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-foreground">
-                  Email
-                </Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -96,35 +90,28 @@ export default function SignupPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-background border-input"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                  Password
-                </Label>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-background border-input"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">
-                  Confirm Password
-                </Label>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-background border-input"
                 />
               </div>
             </div>
@@ -138,12 +125,48 @@ export default function SignupPage() {
                   Login
                 </Link>
               </p>
-              <Button type="submit" size="lg" className="w-full sm:w-auto order-1 sm:order-2" disabled={isLoading}>
+              <Button
+                type="submit"
+                size="lg"
+                className="w-full sm:w-auto order-1 sm:order-2"
+                disabled={isLoading}
+              >
                 {isLoading ? "Creating account..." : "Sign Up"}
               </Button>
             </div>
           </div>
         </form>
+
+        {/* Social Sign-In Section */}
+        <div className="my-6 border-t border-border pt-6">
+          <p className="text-center text-sm text-muted-foreground mb-4">Or continue with</p>
+          <div className="flex justify-center gap-4">
+            <Button
+              variant="outline"
+              onClick={() => signIn("google")}
+              className="flex items-center gap-2"
+            >
+              <img
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  alt="Google"
+                  className="w-5 h-5"
+                />
+              Google
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => signIn("github")}
+              className="flex items-center gap-2"
+            >
+              <img
+                  src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                  alt="GitHub"
+                  className="w-5 h-5 bg-white rounded-full"
+                />
+              GitHub
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   )
