@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { signIn } from "next-auth/react"
-import { Sun, Moon } from "lucide-react"
 
 export default function LoginPage() {
   const [mounted, setMounted] = useState(false)
@@ -20,6 +19,10 @@ export default function LoginPage() {
   const { login } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
+
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+  const githubClientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID
+
 
   useEffect(() => {
     setMounted(true)
@@ -121,35 +124,41 @@ export default function LoginPage() {
         </form>
 
         {/* Social Login Section */}
-        <div className="my-6 border-t border-gray-200 dark:border-gray-600 pt-6">
-          <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-4">Or continue with</p>
-          <div className="flex justify-center gap-4">
-            <Button
-              variant="outline"
-              onClick={() => signIn("google")}
-              className="flex items-center gap-2"
-            >
-              <img
-                  src="https://www.svgrepo.com/show/475656/google-color.svg"
-                  alt="Google"
-                  className="w-5 h-5"
-                />
-              Google
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => signIn("github")}
-              className="flex items-center gap-2"
-            >
-              <img
-                  src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-                  alt="GitHub"
-                  className="w-5 h-5 bg-white rounded-full"
-                />
-              GitHub
-            </Button>
+        {(googleClientId || githubClientId) && (
+          <div className="my-6 border-t border-gray-200 dark:border-gray-600 pt-6">
+            <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-4">Or continue with</p>
+            <div className="flex justify-center gap-4">
+              {googleClientId && (
+                <Button
+                  variant="outline"
+                  onClick={() => signIn("google")}
+                  className="flex items-center gap-2"
+                >
+                  <img
+                    src="https://www.svgrepo.com/show/475656/google-color.svg"
+                    alt="Google"
+                    className="w-5 h-5"
+                  />
+                  Google
+                </Button>
+              )}
+              {githubClientId && (
+                <Button
+                  variant="outline"
+                  onClick={() => signIn("github")}
+                  className="flex items-center gap-2"
+                >
+                  <img
+                    src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                    alt="GitHub"
+                    className="w-5 h-5 bg-white rounded-full"
+                  />
+                  GitHub
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

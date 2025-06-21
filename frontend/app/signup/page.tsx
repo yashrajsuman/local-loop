@@ -13,6 +13,10 @@ import { Moon, Sun } from "lucide-react"
 import { signIn } from "next-auth/react"
 
 export default function SignupPage() {
+
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+  const githubClientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID
+
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -137,36 +141,42 @@ export default function SignupPage() {
           </div>
         </form>
 
-        {/* Social Sign-In Section */}
-        <div className="my-6 border-t border-border pt-6">
-          <p className="text-center text-sm text-muted-foreground mb-4">Or continue with</p>
-          <div className="flex justify-center gap-4">
-            <Button
-              variant="outline"
-              onClick={() => signIn("google")}
-              className="flex items-center gap-2"
-            >
-              <img
-                  src="https://www.svgrepo.com/show/475656/google-color.svg"
-                  alt="Google"
-                  className="w-5 h-5"
-                />
-              Google
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => signIn("github")}
-              className="flex items-center gap-2"
-            >
-              <img
-                  src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-                  alt="GitHub"
-                  className="w-5 h-5 bg-white rounded-full"
-                />
-              GitHub
-            </Button>
+        {/* Social Login Section */}
+        {(googleClientId || githubClientId) && (
+          <div className="my-6 border-t border-gray-200 dark:border-gray-600 pt-6">
+            <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-4">Or continue with</p>
+            <div className="flex justify-center gap-4">
+              {googleClientId && (
+                <Button
+                  variant="outline"
+                  onClick={() => signIn("google")}
+                  className="flex items-center gap-2"
+                >
+                  <img
+                    src="https://www.svgrepo.com/show/475656/google-color.svg"
+                    alt="Google"
+                    className="w-5 h-5"
+                  />
+                  Google
+                </Button>
+              )}
+              {githubClientId && (
+                <Button
+                  variant="outline"
+                  onClick={() => signIn("github")}
+                  className="flex items-center gap-2"
+                >
+                  <img
+                    src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                    alt="GitHub"
+                    className="w-5 h-5 bg-white rounded-full"
+                  />
+                  GitHub
+                </Button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
